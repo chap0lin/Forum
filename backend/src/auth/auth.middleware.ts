@@ -1,22 +1,30 @@
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import config from "../config";
 
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import config from '../config';
+// 1️⃣ Estende o Request do Express para incluir a propriedade 'user'
+interface AuthRequest extends Request {
+  user?: any; // se quiser, substitua 'any' pelo tipo do payload do JWT
+}
 
-export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // "Bearer TOKEN"
+export const authenticateToken = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // "Bearer TOKEN"
 
-  if (token == null) {
-    return res.sendStatus(401); // Unauthorized if no token is present
+  if (!token) {
+    return res.sendStatus(401); // Unauthorized
   }
 
   jwt.verify(token, config.jwtSecret, (err: any, user: any) => {
     if (err) {
-      return res.sendStatus(403); // Forbidden if token is invalid or expired
+      return res.sendStatus(403); // Forbidden
     }
 
-    req.user = user; // Attach user payload to the request object
-    next(); // Proceed to the next middleware or route handler
+    req.user = user; // agora TypeScript aceita
+    next(); // segue para a próxima função/middleware
   });
 };
