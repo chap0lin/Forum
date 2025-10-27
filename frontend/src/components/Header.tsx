@@ -1,8 +1,7 @@
 // src/components/Header.jsx
-
 import styled from "@emotion/styled";
 import logo from "../assets/logo.png";
-import { useNavigate } from "react-router-dom"; // <- import correto
+import { useNavigate } from "react-router-dom";
 
 // ======= ESTILOS ======= //
 const HeaderContainer = styled.header`
@@ -10,8 +9,6 @@ const HeaderContainer = styled.header`
   flex-direction: column;
   background-color: #ffffff;
   color: #000000;
-  padding: 0rem 1rem;
-  margin-top: 1.5rem;
 `;
 
 const BottomRow = styled.div`
@@ -80,14 +77,24 @@ const RegisterLink = styled.span`
   cursor: pointer;
 `;
 
-const Topics = styled.span`
-  font-size: 0.9rem;
+const Topics = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+`;
+
+const TopicLink = styled.span`
+  cursor: pointer;
+  font-weight: semi-bold;
   color: #000;
+  &:hover {
+    color: #007bff;
+  }
 `;
 
 // ======= COMPONENTE ======= //
 export default function Header() {
-  const navigate = useNavigate(); // <- chamando o hook corretamente
+  const navigate = useNavigate();
 
   return (
     <HeaderContainer>
@@ -106,14 +113,16 @@ export default function Header() {
           <TopRow>
             <LoginLink onClick={() => navigate("/login")}>Login</LoginLink>
             <Separator>|</Separator>
-            <RegisterLink
-              onClick={() => navigate("/register")} // <- agora funciona
-            >
-              Registre-se
-            </RegisterLink>
+            <RegisterLink onClick={() => navigate("/register")}>Registre-se</RegisterLink>
           </TopRow>
+
           <Topics>
-            Estatuto | Estratégia | Fórum | Mercado | Colunistas | Parcerias
+            <TopicLink onClick={() => navigate("/")}>Inicio</TopicLink>
+            <TopicLink onClick={() => navigate("/estrategia")}>Estratégia</TopicLink>
+            <TopicLink onClick={() => navigate("/forum")}>Fórum</TopicLink>
+            <TopicLink onClick={() => navigate("/mercado")}>Mercado</TopicLink>
+            <TopicLink onClick={() => navigate("/colunistas")}>Colunistas</TopicLink>
+            <TopicLink onClick={() => navigate("/parcerias")}>Parcerias</TopicLink>
           </Topics>
         </RightColumn>
       </BottomRow>

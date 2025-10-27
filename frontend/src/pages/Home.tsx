@@ -1,6 +1,7 @@
   import React from "react";
   import styled from "@emotion/styled";
   import { Link } from "react-router-dom";
+  import Header from "../components/Header";
 
   // Styled Components
   // Note: These translate the TailwindCSS classes and custom styles from the original HTML.
@@ -37,66 +38,6 @@
     align-items: center;
   `;
 
-  const Container2 = styled.div`
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-  `;
-
-  const Header = styled.header`
-    background-color: ${theme.colors.bgWhite};
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  `;
-
-  const Nav = styled.nav`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-  `;
-
-  const Logo = styled.h1`
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: ${theme.colors.blue};
-    span {
-      color: ${theme.colors.green};
-    }
-  `;
-
-  const NavLink = styled.a`
-    background-color: ${theme.colors.green};
-    color: ${theme.colors.white};
-    font-weight: bold;
-    padding: 0.5rem 1.5rem;
-    border-radius: 0.5rem;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-    &:hover {
-      background-color: #007a2e;
-      color: #fff;
-    }
-  `;
-
-  const NavButtonBlue = styled.a`
-    background-color: ${theme.colors.blue};
-    color: ${theme.colors.white};
-    font-weight: bold;
-    padding: 0.5rem 1.5rem;
-    border-radius: 0.5rem;
-    text-decoration: none;
-    margin-left: 1rem; 
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: #001f55;
-      color: #fff;
-    }
-  `;
 
   const HeroSection = styled.section`
     color: ${theme.colors.white};
@@ -279,23 +220,12 @@
   `;
 
   const App: React.FC = () => {
+   
+
     return (
       <Body>
-        <Header>
-          <Container2>
-            <Nav>
-              <Logo>
-                <span>Brasil</span> Futuro
-              </Logo>
-              <div style={{ display: "flex" }}>
-                <NavLink href="#junte-se">Participe</NavLink>
-                <NavButtonBlue as={Link} to="/login">
-                  Já faz parte? Entre aqui
-                </NavButtonBlue>
-              </div>
-            </Nav>
-          </Container2>
-        </Header>
+        <Header/>
+      
 
         <main>
           <HeroSection>
