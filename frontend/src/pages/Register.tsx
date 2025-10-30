@@ -79,8 +79,8 @@ const Form = styled.form`
 
 const Row = styled.div`
   display: flex;
-  gap: 0.8rem;
-  margin-bottom: 1rem;
+  gap: 0.2rem;
+  margin-bottom: 0,5rem;
 `;
 
 const Input = styled.input`
@@ -98,7 +98,7 @@ const Input = styled.input`
 `;
 
 const Select = styled.select`
-  flex: 1;
+  flex: 1 ;
   padding: 0.7rem 0.9rem;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -146,8 +146,6 @@ const SubmitButton = styled.button`
   }
 `;
 
-// ...imports e estilos permanecem iguais
-
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -169,12 +167,12 @@ export default function RegisterPage() {
     setSuccess("");
 
     if (!terms) {
-      setError("You must accept the terms and conditions");
+      setError("Você deve aceitar os termos e condições");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError("As senhas não coincidem");
       return;
     }
 
@@ -190,11 +188,11 @@ export default function RegisterPage() {
         sex,
       });
 
-      setSuccess("Registration successful! You can now log in.");
+      setSuccess("Cadastro realizado com sucesso! Agora você pode fazer login.");
       // navigate("/login"); // opcional
     } catch (err: any) {
       console.error(err);
-      setError(err.response?.data?.message || "Error registering user");
+      setError(err.response?.data?.message || "Erro ao cadastrar usuário");
     }
   };
 
@@ -203,27 +201,29 @@ export default function RegisterPage() {
       <Header />
       <Content>
         <LeftSection>
-          <h1>Join this movement and help change Brazil!</h1>
+          <h1>Junte-se a este movimento e ajude a mudar o Brasil!</h1>
           <p>
-            Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
-            ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum.
+            Participe de uma comunidade comprometida com a transformação do nosso país.
+            Ao se envolver, você contribui para iniciativas de educação, cidadania e
+            desenvolvimento social, ajudando a construir um futuro mais justo e próspero
+            para todos.
           </p>
         </LeftSection>
 
         <RightSection>
           <RegisterBox>
-            <RegisterTitle>Register for Movimento Brasil Futuro</RegisterTitle>
+            <RegisterTitle>Cadastre-se no Movimento Brasil Futuro</RegisterTitle>
             <Form onSubmit={handleRegister}>
               <Row>
                 <Input
                   type="text"
-                  placeholder="First Name"
+                  placeholder="Nome"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                 />
                 <Input
                   type="text"
-                  placeholder="Last Name"
+                  placeholder="Sobrenome"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                 />
@@ -231,19 +231,19 @@ export default function RegisterPage() {
 
               <Input
                 type="email"
-                placeholder="Email"
+                placeholder="E-mail"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Input
                 type="password"
-                placeholder="Password"
+                placeholder="Senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <Input
                 type="password"
-                placeholder="Confirm Password"
+                placeholder="Confirme a senha"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
@@ -256,24 +256,24 @@ export default function RegisterPage() {
               />
               <Input
                 type="tel"
-                placeholder="Phone"
+                placeholder="Telefone"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
               <Input
                 type="date"
-                placeholder="Birth Date"
+                placeholder="Data de nascimento"
                 value={birthDate}
                 onChange={(e) => setBirthDate(e.target.value)}
               />
 
               <Select value={sex} onChange={(e) => setSex(e.target.value)}>
                 <option value="" disabled>
-                  Sex
+                  Sexo
                 </option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Outro">Outro</option>
               </Select>
 
               <CheckboxRow>
@@ -282,10 +282,10 @@ export default function RegisterPage() {
                   checked={terms}
                   onChange={(e) => setTerms(e.target.checked)}
                 />
-                I accept the <a href="#">Terms and Conditions</a>
+                Eu aceito os <a href="#">Termos e Condições</a>
               </CheckboxRow>
 
-              <SubmitButton type="submit">Complete Registration</SubmitButton>
+              <SubmitButton type="submit">Finalizar Cadastro</SubmitButton>
 
               {error && <p style={{ color: "red" }}>{error}</p>}
               {success && <p style={{ color: "green" }}>{success}</p>}
