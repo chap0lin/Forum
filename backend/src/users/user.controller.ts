@@ -58,7 +58,6 @@ export const createUser = async (req: Request, res: Response) => {
       permission_level: "user", // adiciona o permission_level padrão
     });
 
-
     console.log("Usuário criado com sucesso:", newUser.id);
 
     res.status(201).json(newUser);

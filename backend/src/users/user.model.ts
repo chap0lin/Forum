@@ -16,12 +16,11 @@ export interface User {
   phone?: string;
   birthDate?: string;
   sex?: string;
-  level: string;                // <-- adicionado
-  permission_level: string;     // <-- adicionado
+  level: string; // <-- adicionado
+  permission_level: string; // <-- adicionado
   created_at: string;
   updated_at: string;
 }
-
 
 // Retorna todos os usuários
 export const findAll = async (): Promise<User[]> => {

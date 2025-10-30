@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import config from "../config";
 
-// 1️⃣ Estende o Request do Express para incluir a propriedade 'user'
+// Estende o Request do Express para incluir a propriedade 'user'
 interface AuthRequest extends Request {
-  user?: any; // se quiser, substitua 'any' pelo tipo do payload do JWT
+  user?: any; // Temporário: depois podemos substituir por tipo mais específico
 }
 
 export const authenticateToken = (
@@ -25,6 +25,6 @@ export const authenticateToken = (
     }
 
     req.user = user; // agora TypeScript aceita
-    next(); // segue para a próxima função/middleware
+    next(); // segue para o próximo middleware
   });
 };
