@@ -37,3 +37,8 @@ export const getNews = async (page: number = 1, limit: number = 10) => {
         }
     };
 };
+
+export const deleteNews = async (id: number) => {
+    const deletedRows = await knex("news").where({ id }).del();
+    return deletedRows > 0;
+};

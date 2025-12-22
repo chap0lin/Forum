@@ -39,3 +39,30 @@ export const getNews = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Error fetching news" });
     }
 };
+
+export const deleteNews = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({ message: "News ID is required" });
+        }
+
+        const newsId = parseInt(id);
+
+        if (isNaN(newsId)) {
+            return res.status(400).json({ message: "Invalid news ID" });
+        }
+
+        const deleted = await newsService.deleteNews(newsId);
+
+        if (!deleted) {
+            return res.status(404).json({ message: "News not found" });
+        }
+
+        res.status(200).json({ message: "News deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error deleting news" });
+    }
+};
