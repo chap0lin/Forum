@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom"; // Import useSearchParams
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import api from "../services/api"; // instância do axios
@@ -18,6 +19,7 @@ import {
 } from "./Register.style";
 
 export default function RegisterPage() {
+  const [searchParams] = useSearchParams(); // Get search params
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -46,6 +48,8 @@ export default function RegisterPage() {
       return;
     }
 
+    const colab_id = searchParams.get("ref"); // Get ref param
+
     try {
       await api.post("/users", {
         firstName,
@@ -56,6 +60,7 @@ export default function RegisterPage() {
         phone,
         birthDate,
         sex,
+        colab_id, // Send colab_id
       });
 
       setSuccess("Cadastro realizado com sucesso! Agora você pode fazer login.");

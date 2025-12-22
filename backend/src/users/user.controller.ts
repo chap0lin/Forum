@@ -36,7 +36,7 @@ export const createUser = async (req: Request, res: Response) => {
   try {
     console.log("Dados recebidos no backend:", req.body);
 
-    const { firstName, lastName, email, password, cpf, phone, birthDate, sex } =
+    const { firstName, lastName, email, password, cpf, phone, birthDate, sex, colab_id } =
       req.body;
 
     if (!password) {
@@ -56,7 +56,8 @@ export const createUser = async (req: Request, res: Response) => {
       sex,
       level: "user", // adiciona o level padrão
       permission_level: "user", // adiciona o permission_level padrão
-    });
+      colab_id: colab_id ? parseInt(colab_id, 10) : undefined,
+    } as any); // Cast to any to avoid strict Omit type mismatch if necessary, or ensure User interface matches exactly.
 
     console.log("Usuário criado com sucesso:", newUser.id);
 
@@ -64,6 +65,25 @@ export const createUser = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Erro ao criar usuário:", error);
     res.status(500).json({ message: "Error creating user", error });
+  }
+};
+
+// GET /users/invites
+export const getInvitedUsers = async (req: Request, res: Response) => {
+  try {
+    // Assuming req.user is populated by authenticateToken middleware
+    // We might need to extend Request type or cast it
+    const user = (req as any).user;
+
+    if (!user || !user.id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const invitedUsers = await UserModel.findByColabId(user.id);
+    res.status(200).json(invitedUsers);
+  } catch (error) {
+    console.error("Error fetching invited users:", error);
+    res.status(500).json({ message: "Error fetching invited users", error });
   }
 };
 
