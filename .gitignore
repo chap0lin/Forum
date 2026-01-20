@@ -1,2 +1,5 @@
 backend/node_modules
 backend/.env
+
+backend/dev.sqlite3
+backend/*.sqlite3
