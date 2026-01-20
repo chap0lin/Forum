@@ -23,6 +23,7 @@ import {
 export default function Header() {
   const navigate = useNavigate();
   const [isColaborador, setIsColaborador] = React.useState(false);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,6 +35,7 @@ export default function Header() {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
         const payload = JSON.parse(jsonPayload);
+        setIsLoggedIn(true);
 
         if (payload.level === "colaborador") {
           setIsColaborador(true);
@@ -58,11 +60,13 @@ export default function Header() {
 
         {/* Lado direito: login/registre-se + tópicos */}
         <RightColumn>
-          <TopRow>
-            <LoginLink onClick={() => navigate("/login")}>Login</LoginLink>
-            <Separator>|</Separator>
-            <RegisterLink onClick={() => navigate("/register")}>Registre-se</RegisterLink>
-          </TopRow>
+          {!isLoggedIn && (
+            <TopRow>
+              <LoginLink onClick={() => navigate("/login")}>Login</LoginLink>
+              <Separator>|</Separator>
+              <RegisterLink onClick={() => navigate("/register")}>Registre-se</RegisterLink>
+            </TopRow>
+          )}
 
           <Topics>
             <TopicLink onClick={() => navigate("/")}>Inicio</TopicLink>
