@@ -1,5 +1,5 @@
 // src/components/Header.jsx
-import logo from "../assets/logo.png";
+import logo from "../../assets/logo.png";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -74,7 +74,7 @@ export default function Header() {
             <TopicLink onClick={() => navigate("/forum")}>Fórum</TopicLink>
             <TopicLink onClick={() => navigate("/mercado")}>Mercado</TopicLink>
             <TopicLink onClick={() => navigate("/colunistas")}>Colunistas</TopicLink>
-            <TopicLink onClick={() => navigate("/parcerias")}>Parcerias</TopicLink>
+            <TopicLink onClick={() => navigate("/gerenciar-movimento")}>Parcerias</TopicLink>
             {isColaborador && (
               <TopicLink onClick={() => navigate("/gerenciar-movimento")}>
                 Gerenciar movimento

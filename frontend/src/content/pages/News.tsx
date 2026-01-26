@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Header from '../../shared/components/Header';
+import Footer from '../../shared/components/Footer';
 import axios from 'axios';
 import {
     NewsContainer,

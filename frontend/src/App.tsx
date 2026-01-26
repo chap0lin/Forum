@@ -1,14 +1,14 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Estrategia from "./pages/Estrategia";
-import Colunistas from "./pages/Colunistas";
-import News from "./pages/News";
-import InviteManagement from "./pages/InviteManagement";
-;
+import Home from "./content/pages/Home";
+import Login from "./auth/pages/Login";
+import Register from "./auth/pages/Register";
+import Estrategia from "./content/pages/Estrategia";
+import Colunistas from "./content/pages/Colunistas";
+import News from "./content/pages/News";
+import InviteManagement from "./admin/pages/InviteManagement";
 
-const App = () => {
+
+const App = () => { 
   return (
     <HashRouter>
       <Routes>

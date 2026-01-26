@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import api from "../services/api";
+import Header from '../../shared/components/Header';
+import Footer from '../../shared/components/Footer';
+import api from "../../shared/services/api";
 import {
     Container,
     Content,
