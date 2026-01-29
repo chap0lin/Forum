@@ -36,6 +36,9 @@ import {
 } from './style';
 import { forumService } from '../../services/forun.services';
 import type { ForumPost } from '../../types/forum-post.type';
+import { usePermission } from '../../../auth/hooks/usePermission';
+import type { Role } from '../../../auth/types/role.type';
+
 
 
 const modules = {
@@ -57,6 +60,10 @@ const formats = [
 
 
 const ForumHome = () => {
+
+    const userRole: Role = 'MEMBER';
+    const { can, role } = usePermission(userRole);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [newsToDelete, setNewsToDelete] = useState<number | null>(null);
@@ -196,9 +203,13 @@ const ForumHome = () => {
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', marginTop: '20px' }}>
                             <OpenDiscussionButton>🔎 Abrir Discussão</OpenDiscussionButton>
-                            <DeleteNewsButton onClick={() => handleDeleteNews(item.id)}>
-                                🗑️ Excluir
-                            </DeleteNewsButton>
+                            {can('forum:delete_any_post') && (
+                                <DeleteNewsButton onClick={() => handleDeleteNews(item.id)}>
+                                    🗑️ Excluir
+                                </DeleteNewsButton>
+                            )}
+
+
                         </div>
                     </NewsCard>
                 ))}
