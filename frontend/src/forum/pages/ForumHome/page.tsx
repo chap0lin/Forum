@@ -4,7 +4,6 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import Header from '../../../shared/components/Header';
 import Footer from '../../../shared/components/Footer';
-import axios from 'axios';
 import {
     NewsContainer,
     MainContent,
@@ -35,6 +34,9 @@ import {
     CancelButton,
     PublishButton
 } from './style';
+import { forumService } from '../../services/forun.services';
+import type { ForumPost } from '../../types/forum-post.type';
+
 
 const modules = {
     toolbar: [
@@ -53,14 +55,6 @@ const formats = [
     'list', 'bullet', 'indent', 'link', 'image', 'video', 'color', 'background', 'align'
 ];
 
-interface NewsItem {
-    id: number;
-    title: string;
-    content: string;
-    tags: string;
-    created_at: string;
-    status: string; // aberto / fechado
-}
 
 const ForumHome = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -69,14 +63,14 @@ const ForumHome = () => {
     const [title, setTitle] = useState('');
     const [tags, setTags] = useState('');
     const [content, setContent] = useState('');
-    const [news, setNews] = useState<NewsItem[]>([]);
+    const [news, setNews] = useState<ForumPost[]>([]);
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState('recentes');
 
     const fetchNews = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/news`);
-            setNews(response.data.data);
+            const data = await forumService.getPosts();
+            setNews(data);
         } catch (err) {
             console.error(err);
         }
@@ -108,12 +102,13 @@ const ForumHome = () => {
         }
 
         try {
-            await axios.post('http://localhost:3000/api/news', {
+            await forumService.createPost({
                 title,
                 content,
                 tags,
                 status: 'aberto'
             });
+
 
             fetchNews();
             setIsModalOpen(false);
@@ -133,7 +128,7 @@ const ForumHome = () => {
     const confirmDeleteNews = async () => {
         if (newsToDelete) {
             try {
-                await axios.delete(`http://localhost:3000/api/news/${newsToDelete}`);
+                await forumService.deletePost(newsToDelete);
                 fetchNews();
                 setIsDeleteModalOpen(false);
                 setNewsToDelete(null);
@@ -280,5 +275,5 @@ const ForumHome = () => {
     );
 };
 
-export default ForumHome ;
+export default ForumHome;
 

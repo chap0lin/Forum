@@ -5,7 +5,7 @@ import Register from "./auth/pages/Register";
 import Estrategia from "./content/pages/Estrategia";
 import Colunistas from "./content/pages/Colunistas";
 import InviteManagement from "./admin/pages/InviteManagement";
-import ForumHome from "./forum/pages/ForumHom/page";
+import ForumHome from "./forum/pages/ForumHome/page";
 
 
 const App = () => { 
