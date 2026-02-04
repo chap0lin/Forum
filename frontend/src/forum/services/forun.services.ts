@@ -19,5 +19,19 @@ export const forumService = {
   async deletePost(id: number) {
     const response = await axios.delete(`${API_URL}/${id}`);
     return response.data;
-  }
+  },
+
+  updatePost: async (
+    id: number,
+    data: {
+      title: string;
+      content: string;
+      tags: string;
+      status: string;
+    }
+  ) => {
+    const response = await axios.put(`${API_URL}/${id}`, data);
+    return response.data;
+  },
+
 };

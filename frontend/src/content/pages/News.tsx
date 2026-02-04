@@ -282,4 +282,3 @@ const News = () => {
 
 export default News;
 
-// ------------------ FIM DO ARQUIVO ------------------

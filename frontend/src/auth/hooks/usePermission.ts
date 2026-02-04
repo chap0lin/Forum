@@ -7,5 +7,5 @@ export function usePermission(role: Role) {
     return ROLE_PERMISSIONS[role]?.includes(permission) ?? false;
   }
 
-  return { can, role };
+  return { can };
 }

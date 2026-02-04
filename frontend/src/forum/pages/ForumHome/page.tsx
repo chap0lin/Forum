@@ -61,8 +61,9 @@ const formats = [
 
 const ForumHome = () => {
 
-    const userRole: Role = 'MEMBER';
-    const { can, role } = usePermission(userRole);
+    const userRole: Role = 'ADMIN';
+    const { can } = usePermission(userRole);
+    const [editingPost, setEditingPost] = useState<ForumPost | null>(null);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -106,31 +107,60 @@ const ForumHome = () => {
         if (!title.trim() || !content.trim()) {
             alert('Preencha o título e o conteúdo.');
             return;
+            console.log('aqui');
         }
 
         try {
-            await forumService.createPost({
-                title,
-                content,
-                tags,
-                status: 'aberto'
-            });
 
+            if (editingPost) {
+                // UPDATE
+                await forumService.updatePost(editingPost.id, {
+                    title,
+                    content,
+                    tags,
+                    status: editingPost.status
+                });
+
+            } else {
+                // CREATE
+                await forumService.createPost({
+                    title,
+                    content,
+                    tags,
+                    status: 'aberto'
+                });
+            }
 
             fetchNews();
+
             setIsModalOpen(false);
+            setEditingPost(null); // MUITO IMPORTANTE
+
             setTitle('');
             setTags('');
             setContent('');
+
         } catch (err) {
             console.error(err);
         }
     };
 
+
     const handleDeleteNews = (newsId: number) => {
         setNewsToDelete(newsId);
         setIsDeleteModalOpen(true);
     };
+
+    const handleEditPost = (post: ForumPost) => {
+        setEditingPost(post);
+
+        setTitle(post.title);
+        setTags(post.tags);
+        setContent(post.content);
+
+        setIsModalOpen(true);
+    };
+
 
     const confirmDeleteNews = async () => {
         if (newsToDelete) {
@@ -177,9 +207,12 @@ const ForumHome = () => {
                         <option value="fechadas">Discussões Fechadas</option>
                     </FilterSelect>
 
-                    <PublishButtonTop onClick={() => setIsModalOpen(true)}>
-                        + Nova Publicação
-                    </PublishButtonTop>
+                    {can('forum:create_post') && (
+                        <PublishButtonTop onClick={() => setIsModalOpen(true)}>
+                            + Nova Publicação
+                        </PublishButtonTop>
+                    )}
+
                 </FilterSearchRow>
 
                 {/* LISTA DE NOTÍCIAS */}
@@ -203,6 +236,13 @@ const ForumHome = () => {
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', marginTop: '20px' }}>
                             <OpenDiscussionButton>🔎 Abrir Discussão</OpenDiscussionButton>
+
+
+                            {can('forum:create_post') && (
+                                <DeleteNewsButton onClick={() => handleEditPost(item)}>
+                                    ✏️ Editar
+                                </DeleteNewsButton>
+                            )}
                             {can('forum:delete_any_post') && (
                                 <DeleteNewsButton onClick={() => handleDeleteNews(item.id)}>
                                     🗑️ Excluir
@@ -220,7 +260,8 @@ const ForumHome = () => {
             {isModalOpen && (
                 <ModalOverlay onClick={() => setIsModalOpen(false)}>
                     <ModalContent onClick={(e) => e.stopPropagation()}>
-                        <h2>Nova Publicação</h2>
+                        <h2>{editingPost ? 'Editar Publicação' : 'Nova Publicação'}</h2>
+
 
                         <InputGroup>
                             <Label>Título</Label>
@@ -254,7 +295,10 @@ const ForumHome = () => {
 
                         <ButtonGroup>
                             <CancelButton onClick={() => setIsModalOpen(false)}>Cancelar</CancelButton>
-                            <PublishButton onClick={handlePublish}>Publicar</PublishButton>
+                            <PublishButton onClick={handlePublish}>
+                                {editingPost ? 'Salvar alterações' : 'Publicar'}
+                            </PublishButton>
+
                         </ButtonGroup>
                     </ModalContent>
                 </ModalOverlay>
