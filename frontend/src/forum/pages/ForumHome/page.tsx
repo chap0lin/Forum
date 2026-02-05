@@ -1,7 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import ReactQuill from 'react-quill-new';
-import 'react-quill-new/dist/quill.snow.css';
 import Header from '../../../shared/components/Header';
 import Footer from '../../../shared/components/Footer';
 import {
@@ -38,25 +36,9 @@ import { forumService } from '../../services/forun.services';
 import type { ForumPost } from '../../types/forum-post.type';
 import { usePermission } from '../../../auth/hooks/usePermission';
 import type { Role } from '../../../auth/types/role.type';
+import RichTextEditor from '../../components/RichTextEditor';
 
 
-
-const modules = {
-    toolbar: [
-        [{ header: [1, 2, false] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
-        ['link', 'image', 'video'],
-        ['clean'],
-        [{ color: [] }, { background: [] }],
-        [{ align: [] }]
-    ]
-};
-
-const formats = [
-    'header', 'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent', 'link', 'image', 'video', 'color', 'background', 'align'
-];
 
 
 const ForumHome = () => {
@@ -284,12 +266,11 @@ const ForumHome = () => {
                         <InputGroup>
                             <Label>Conteúdo</Label>
                             <EditorContainer>
-                                <ReactQuill
+                                <RichTextEditor
                                     value={content}
                                     onChange={setContent}
-                                    modules={modules}
-                                    formats={formats}
                                 />
+
                             </EditorContainer>
                         </InputGroup>
 
