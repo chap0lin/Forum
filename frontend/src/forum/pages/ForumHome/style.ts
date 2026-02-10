@@ -151,6 +151,7 @@ export const ModalOverlay = styled.div`
     align-items: center;
     justify-content: center;
     z-index: 2000;
+    
 `;
 
 export const ModalContent = styled.div`
@@ -158,7 +159,10 @@ export const ModalContent = styled.div`
     padding: 30px;
     width: 600px;
     border-radius: 18px;
+    
 `;
+
+
 
 export const DeleteConfirmModal = styled.div`
     background: #fff;

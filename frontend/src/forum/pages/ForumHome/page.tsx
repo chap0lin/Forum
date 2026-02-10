@@ -24,19 +24,12 @@ import {
     DeleteButtonGroup,
     CancelDeleteButton,
     ConfirmDeleteButton,
-    InputGroup,
-    Label,
-    StyledInput,
-    EditorContainer,
-    ButtonGroup,
-    CancelButton,
-    PublishButton
 } from './style';
 import { forumService } from '../../services/forun.services';
 import type { ForumPost } from '../../types/forum-post.type';
 import { usePermission } from '../../../auth/hooks/usePermission';
 import type { Role } from '../../../auth/types/role.type';
-import RichTextEditor from '../../components/RichTextEditor';
+import ForumPostForm from '../../components/ForumPostForm';
 
 
 
@@ -50,9 +43,6 @@ const ForumHome = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [newsToDelete, setNewsToDelete] = useState<number | null>(null);
-    const [title, setTitle] = useState('');
-    const [tags, setTags] = useState('');
-    const [content, setContent] = useState('');
     const [news, setNews] = useState<ForumPost[]>([]);
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState('recentes');
@@ -85,48 +75,6 @@ const ForumHome = () => {
             return 0;
         });
 
-    const handlePublish = async () => {
-        if (!title.trim() || !content.trim()) {
-            alert('Preencha o título e o conteúdo.');
-            return;
-            console.log('aqui');
-        }
-
-        try {
-
-            if (editingPost) {
-                // UPDATE
-                await forumService.updatePost(editingPost.id, {
-                    title,
-                    content,
-                    tags,
-                    status: editingPost.status
-                });
-
-            } else {
-                // CREATE
-                await forumService.createPost({
-                    title,
-                    content,
-                    tags,
-                    status: 'aberto'
-                });
-            }
-
-            fetchNews();
-
-            setIsModalOpen(false);
-            setEditingPost(null); // MUITO IMPORTANTE
-
-            setTitle('');
-            setTags('');
-            setContent('');
-
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
 
     const handleDeleteNews = (newsId: number) => {
         setNewsToDelete(newsId);
@@ -135,11 +83,6 @@ const ForumHome = () => {
 
     const handleEditPost = (post: ForumPost) => {
         setEditingPost(post);
-
-        setTitle(post.title);
-        setTags(post.tags);
-        setContent(post.content);
-
         setIsModalOpen(true);
     };
 
@@ -244,43 +187,46 @@ const ForumHome = () => {
                     <ModalContent onClick={(e) => e.stopPropagation()}>
                         <h2>{editingPost ? 'Editar Publicação' : 'Nova Publicação'}</h2>
 
+                        <ForumPostForm
+                            initialData={
+                                editingPost
+                                    ? {
+                                        title: editingPost.title,
+                                        tags: editingPost.tags,
+                                        content: editingPost.content
+                                    }
+                                    : undefined
+                            }
+                            isEditing={!!editingPost}
+                            onCancel={() => {
+                                setIsModalOpen(false);
+                                setEditingPost(null);
+                            }}
+                            onSubmit={async (data) => {
 
-                        <InputGroup>
-                            <Label>Título</Label>
-                            <StyledInput
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                placeholder="Título da publicação"
-                            />
-                        </InputGroup>
+                                if (editingPost) {
 
-                        <InputGroup>
-                            <Label>Tags</Label>
-                            <StyledInput
-                                value={tags}
-                                onChange={(e) => setTags(e.target.value)}
-                                placeholder="Ex: Brasil, Governo, Política"
-                            />
-                        </InputGroup>
+                                    await forumService.updatePost(editingPost.id, {
+                                        ...data,
+                                        status: editingPost.status
+                                    });
 
-                        <InputGroup>
-                            <Label>Conteúdo</Label>
-                            <EditorContainer>
-                                <RichTextEditor
-                                    value={content}
-                                    onChange={setContent}
-                                />
+                                } else {
 
-                            </EditorContainer>
-                        </InputGroup>
+                                    await forumService.createPost({
+                                        ...data,
+                                        status: 'aberto'
+                                    });
 
-                        <ButtonGroup>
-                            <CancelButton onClick={() => setIsModalOpen(false)}>Cancelar</CancelButton>
-                            <PublishButton onClick={handlePublish}>
-                                {editingPost ? 'Salvar alterações' : 'Publicar'}
-                            </PublishButton>
+                                }
 
-                        </ButtonGroup>
+                                await fetchNews();
+
+                                setIsModalOpen(false);
+                                setEditingPost(null);
+                            }}
+                        />
+
                     </ModalContent>
                 </ModalOverlay>
             )}

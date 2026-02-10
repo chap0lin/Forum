@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
+import {EditorContainer} from '../components/RichTextEditorStyle';
+
 
 const defaultModules = {
   toolbar: [
@@ -35,6 +37,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   placeholder = ''
 }) => {
   return (
+        <EditorContainer>
     <ReactQuill
       value={value}
       onChange={onChange}
@@ -42,7 +45,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       formats={formats}
       placeholder={placeholder}
     />
-  );
+    </EditorContainer>
+  
+);
+
 };
 
 export default RichTextEditor;
