@@ -25,7 +25,7 @@ import {
     CancelDeleteButton,
     ConfirmDeleteButton,
 } from './style';
-import { forumService } from '../../services/forun.services';
+import { forumService } from '../../services/forum.services';
 import type { ForumPost } from '../../types/forum-post.type';
 import { usePermission } from '../../../auth/hooks/usePermission';
 import type { Role } from '../../../auth/types/role.type';

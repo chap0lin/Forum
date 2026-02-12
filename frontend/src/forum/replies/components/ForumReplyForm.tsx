@@ -1,6 +1,6 @@
 import { useState } from "react";
-import RichTextEditor from "../RichTextEditor";
-import { forumReplyService } from "../../services/reply/forum-reply.service";
+import RichTextEditor from "../../components/RichTextEditor";
+import { forumReplyService } from "../services/forum-reply.service";
 
 
 interface Props {

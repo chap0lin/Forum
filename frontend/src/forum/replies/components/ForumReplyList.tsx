@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { forumReplyService } from "../../services/reply/forum-reply.service";
+import { forumReplyService } from "../services/forum-reply.service";
 
 
 interface Props {

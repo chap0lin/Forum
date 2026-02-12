@@ -1,6 +1,6 @@
 import api from "../../../shared/services/api";
-import type { ForumReply } from "../../types/reply/forum-reply.type";
-import type { CreateReplyDTO } from "../../types/reply/create-reply.dto";
+import type { ForumReply } from "../types/forum-reply.type";
+import type { CreateReplyDTO } from "../types/create-reply.dto";
 
 
 export const forumReplyService = {
