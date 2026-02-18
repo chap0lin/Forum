@@ -75,6 +75,7 @@ export default function Header() {
             <TopicLink onClick={() => navigate("/mercado")}>Mercado</TopicLink>
             <TopicLink onClick={() => navigate("/colunistas")}>Colunistas</TopicLink>
             <TopicLink onClick={() => navigate("/gerenciar-movimento")}>Parcerias</TopicLink>
+            <TopicLink onClick={() => navigate("/contato")}>Contato</TopicLink>
             {isColaborador && (
               <TopicLink onClick={() => navigate("/gerenciar-movimento")}>
                 Gerenciar movimento

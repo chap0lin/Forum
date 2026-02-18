@@ -1,4 +1,4 @@
-
+import { useListFilter } from '../../../shared/components/hooks/useListFilter';
 import { useState, useEffect } from 'react';
 import Header from '../../../shared/components/Header';
 import Footer from '../../../shared/components/Footer';
@@ -39,7 +39,6 @@ const ForumHome = () => {
     const userRole: Role = 'ADMIN';
     const { can } = usePermission(userRole);
     const [editingPost, setEditingPost] = useState<ForumPost | null>(null);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [newsToDelete, setNewsToDelete] = useState<number | null>(null);
@@ -60,21 +59,14 @@ const ForumHome = () => {
         fetchNews();
     }, []);
 
-    const filteredNews = news
-        .filter(n => n.title.toLowerCase().includes(search.toLowerCase()))
-        .filter(n => {
-            if (filter === 'recentes') return true;
-            if (filter === 'antigas') return true;
-            if (filter === 'abertas') return n.status === 'aberto';
-            if (filter === 'fechadas') return n.status === 'fechado';
-            return true;
-        })
-        .sort((a, b) => {
-            if (filter === 'recentes') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-            if (filter === 'antigas') return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-            return 0;
-        });
-
+    const { filteredItems: filteredNews } = useListFilter({
+        items: news,
+        search,
+        filter,
+        searchField: "title",
+        dateField: "created_at",
+        statusField: "status",
+    });
 
     const handleDeleteNews = (newsId: number) => {
         setNewsToDelete(newsId);
