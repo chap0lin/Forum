@@ -18,6 +18,7 @@ export interface User {
   sex?: string;
   level: string; // <-- adicionado
   permission_level: string; // <-- adicionado
+  colab_id?: number; // <-- adicionado
   created_at: string;
   updated_at: string;
 }
@@ -57,4 +58,9 @@ export const remove = async (id: number): Promise<void> => {
 // Busca usuário por email
 export const findByEmail = async (email: string): Promise<User | undefined> => {
   return db("users").where({ email }).first();
+};
+
+// Busca usuários por colab_id
+export const findByColabId = async (colabId: number): Promise<User[]> => {
+  return db("users").where({ colab_id: colabId });
 };

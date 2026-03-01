@@ -83,7 +83,11 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.95rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
   margin-bottom: 1rem;
+  background-color: #ffffff;
+  color: #333;
 
   &:focus {
     outline: none;
@@ -97,7 +101,11 @@ export const Select = styled.select`
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.95rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
   margin-bottom: 1rem;
+  background-color: #ffffff;
+  color: #333;
 
   &:focus {
     outline: none;

@@ -87,6 +87,7 @@ export const Input = styled.input`
     border-radius: 4px;
     font-size: 0.95rem;
     background: white;
+    color: #333;
 
     &:focus {
       outline: none;
