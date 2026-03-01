@@ -1,0 +1,161 @@
+
+openapi: 3.0.0
+info:
+  title: Forum-Based Closed Social Network API
+  version: 1.0.0
+paths:
+  # Auth & Signup
+  /auth/invite/{token}:
+    get:
+      summary: Validate invitation token and get coordinator info
+      responses:
+        '200':
+          description: Valid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  coordinator:
+                    $ref: '#/components/schemas/User'
+  /auth/signup:
+    post:
+      summary: Complete signup and initiate payment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, email, password, name]
+              properties:
+                token:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Payment preference created (Redirect URL)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paymentUrl:
+                    type: string
+
+  # Topics & Forum
+  /topics:
+    get:
+      summary: List forum topics (paginated)
+      responses:
+        '200':
+          description: List of topics
+    post:
+      summary: Create a new topic (Admin/Coordinator with permission)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopicInput'
+      responses:
+        '201':
+          description: Topic created
+
+  /topics/{id}:
+    get:
+      summary: Get topic details and replies
+      responses:
+        '200':
+          description: Topic detail
+
+  /posts:
+    post:
+      summary: Create a reply to a topic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostInput'
+      responses:
+        '201':
+          description: Post created
+
+  # Pages
+  /pages/{slug}:
+    get:
+      summary: Get page content (Estatuto, SP, RJ, etc.)
+      responses:
+        '200':
+          description: Page content
+    put:
+      summary: Update page content (Admin or permitted Coordinator)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+      responses:
+        '200':
+          description: Page updated
+
+  # Coordinator Dashboard
+  /dashboard/members:
+    get:
+      summary: List linked members
+      responses:
+        '200':
+          description: List of members
+
+  /dashboard/revenue:
+    get:
+      summary: Get revenue forecast
+      responses:
+        '200':
+          description: Revenue breakdown
+
+  # Admin Dashboard
+  /admin/payouts:
+    get:
+      summary: Monthly payout overview
+      responses:
+        '200':
+          description: Payout summary
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+    TopicInput:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+    PostInput:
+      type: object
+      required: [topicId, content]
+      properties:
+        topicId:
+          type: integer
+        content:
+          type: string
+        parentPostId:
+          type: integer

@@ -10,7 +10,11 @@ const config: { [key: string]: Knex.Config } = {
     },
     useNullAsDefault: true,
     migrations: {
-      extension: "ts", // Tell knex to generate TypeScript migrations
+      directory: "./src/database/migrations",
+      extension: "ts",
+    },
+    seeds: {
+      directory: "./src/database/seeds",
     },
   },
 };

@@ -1,53 +1,42 @@
+
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api";
-
-// Função de login
-export const login = async (email: string, password: string) => {
-  const res = await axios.post(`${API_URL}/auth/login`, { email, password });
-
-  const { token } = res.data;
-
-  // Salva o token no localStorage para autenticação nas próximas requisições
-  if (token) {
-    localStorage.setItem("token", token);
-  }
-
-  return res.data; // retorna { token: "..." } ou outros dados do backend
-};
-
-// Instância do axios para requisições autenticadas
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: "http://localhost:3000/api", // Adjust if needed
 });
 
-// Interceptor de requisição
-// Adiciona o token automaticamente no header Authorization de todas as requisições
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-);
+  return config;
+});
 
-// Interceptor de resposta
-// Redireciona o usuário para a tela de login se a sessão expirou ou ele não estiver autenticado
-api.interceptors.response.use(
-  (response) => response, // se a resposta estiver ok, apenas retorna
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      // Token inválido ou não fornecido
-      localStorage.removeItem("token"); // remove token armazenado
-      window.location.href = "/login"; // redireciona para a tela de login
-    }
-    return Promise.reject(error);
-  }
-);
+export const authApi = {
+  validateInvite: (token: string) => api.get(`/auth/invite/${token}`),
+  signup: (data: any) => api.post("/auth/signup", data),
+  login: (email: string, password: string) => api.post("/auth/login", { email, password }).then((res) => res.data),
+};
+
+export const login = authApi.login;
+
+export const forumApi = {
+  listTopics: (page = 1) => api.get(`/topics?page=${page}`),
+  getTopic: (id: number) => api.get(`/topics/${id}`),
+  createTopic: (data: any) => api.post("/topics", data),
+  reply: (topicId: number, data: any) => api.post(`/topics/${topicId}/posts`, data),
+};
+
+export const pageApi = {
+  getPage: (slug: string) => api.get(`/pages/${slug}`),
+  savePage: (data: any) => api.post("/pages", data),
+};
+
+export const messageApi = {
+  getConversations: () => api.get("/messages/conversations"),
+  getMessages: (userId: number) => api.get(`/messages/${userId}`),
+  sendMessage: (userId: number, content: string) => api.post(`/messages/${userId}`, { content }),
+};
 
 export default api;
