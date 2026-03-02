@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { login } from "../services/api";
+import Header from "../../shared/components/Header";
+import Footer from "../../shared/components/Footer";
+import { login } from "../../shared/services/api";
 import {
   PageContainer,
   Content,
@@ -19,7 +19,7 @@ import {
   Divider,
   SocialButton,
   FooterText,
-} from "./Login.style";
+} from "../../auth/pages/Login.style";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom"; // Import useSearchParams
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import api from "../services/api"; // instância do axios
+import Footer from "../../shared/components/Footer";
+import Header from "../../shared/components/Header";
+import api from "../../shared/services/api"; // instância do axios
 import {
   PageContainer,
   Content,
@@ -16,7 +16,7 @@ import {
   Select,
   CheckboxRow,
   SubmitButton,
-} from "./Register.style";
+} from "../../auth/pages/Register.style";
 
 export default function RegisterPage() {
   const [searchParams] = useSearchParams(); // Get search params

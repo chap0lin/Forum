@@ -1,10 +1,7 @@
-
+import { useListFilter } from '../../../shared/components/hooks/useListFilter';
 import { useState, useEffect } from 'react';
-import ReactQuill from 'react-quill-new';
-import 'react-quill-new/dist/quill.snow.css';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import axios from 'axios';
+import Header from '../../../shared/components/Header';
+import Footer from '../../../shared/components/Footer';
 import {
     NewsContainer,
     MainContent,
@@ -27,56 +24,32 @@ import {
     DeleteButtonGroup,
     CancelDeleteButton,
     ConfirmDeleteButton,
-    InputGroup,
-    Label,
-    StyledInput,
-    EditorContainer,
-    ButtonGroup,
-    CancelButton,
-    PublishButton
-} from './News.style';
+} from './style';
+import { forumService } from '../../services/forum.services';
+import type { ForumPost } from '../../types/forum-post.type';
+import { usePermission } from '../../../auth/hooks/usePermission';
+import type { Role } from '../../../auth/types/role.type';
+import ForumPostForm from '../../components/ForumPostForm';
 
-const modules = {
-    toolbar: [
-        [{ header: [1, 2, false] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
-        ['link', 'image', 'video'],
-        ['clean'],
-        [{ color: [] }, { background: [] }],
-        [{ align: [] }]
-    ]
-};
 
-const formats = [
-    'header', 'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent', 'link', 'image', 'video', 'color', 'background', 'align'
-];
 
-interface NewsItem {
-    id: number;
-    title: string;
-    content: string;
-    tags: string;
-    created_at: string;
-    status: string; // aberto / fechado
-}
 
-const News = () => {
+const ForumHome = () => {
+
+    const userRole: Role = 'ADMIN';
+    const { can } = usePermission(userRole);
+    const [editingPost, setEditingPost] = useState<ForumPost | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [newsToDelete, setNewsToDelete] = useState<number | null>(null);
-    const [title, setTitle] = useState('');
-    const [tags, setTags] = useState('');
-    const [content, setContent] = useState('');
-    const [news, setNews] = useState<NewsItem[]>([]);
+    const [news, setNews] = useState<ForumPost[]>([]);
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState('recentes');
 
     const fetchNews = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/news`);
-            setNews(response.data.data);
+            const data = await forumService.getPosts();
+            setNews(data);
         } catch (err) {
             console.error(err);
         }
@@ -86,54 +59,30 @@ const News = () => {
         fetchNews();
     }, []);
 
-    const filteredNews = news
-        .filter(n => n.title.toLowerCase().includes(search.toLowerCase()))
-        .filter(n => {
-            if (filter === 'recentes') return true;
-            if (filter === 'antigas') return true;
-            if (filter === 'abertas') return n.status === 'aberto';
-            if (filter === 'fechadas') return n.status === 'fechado';
-            return true;
-        })
-        .sort((a, b) => {
-            if (filter === 'recentes') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-            if (filter === 'antigas') return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-            return 0;
-        });
-
-    const handlePublish = async () => {
-        if (!title.trim() || !content.trim()) {
-            alert('Preencha o título e o conteúdo.');
-            return;
-        }
-
-        try {
-            await axios.post('http://localhost:3000/api/news', {
-                title,
-                content,
-                tags,
-                status: 'aberto'
-            });
-
-            fetchNews();
-            setIsModalOpen(false);
-            setTitle('');
-            setTags('');
-            setContent('');
-        } catch (err) {
-            console.error(err);
-        }
-    };
+    const { filteredItems: filteredNews } = useListFilter({
+        items: news,
+        search,
+        filter,
+        searchField: "title",
+        dateField: "created_at",
+        statusField: "status",
+    });
 
     const handleDeleteNews = (newsId: number) => {
         setNewsToDelete(newsId);
         setIsDeleteModalOpen(true);
     };
 
+    const handleEditPost = (post: ForumPost) => {
+        setEditingPost(post);
+        setIsModalOpen(true);
+    };
+
+
     const confirmDeleteNews = async () => {
         if (newsToDelete) {
             try {
-                await axios.delete(`http://localhost:3000/api/news/${newsToDelete}`);
+                await forumService.deletePost(newsToDelete);
                 fetchNews();
                 setIsDeleteModalOpen(false);
                 setNewsToDelete(null);
@@ -175,9 +124,12 @@ const News = () => {
                         <option value="fechadas">Discussões Fechadas</option>
                     </FilterSelect>
 
-                    <PublishButtonTop onClick={() => setIsModalOpen(true)}>
-                        + Nova Publicação
-                    </PublishButtonTop>
+                    {can('forum:create_post') && (
+                        <PublishButtonTop onClick={() => setIsModalOpen(true)}>
+                            + Nova Publicação
+                        </PublishButtonTop>
+                    )}
+
                 </FilterSearchRow>
 
                 {/* LISTA DE NOTÍCIAS */}
@@ -201,9 +153,20 @@ const News = () => {
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', marginTop: '20px' }}>
                             <OpenDiscussionButton>🔎 Abrir Discussão</OpenDiscussionButton>
-                            <DeleteNewsButton onClick={() => handleDeleteNews(item.id)}>
-                                🗑️ Excluir
-                            </DeleteNewsButton>
+
+
+                            {can('forum:create_post') && (
+                                <DeleteNewsButton onClick={() => handleEditPost(item)}>
+                                    ✏️ Editar
+                                </DeleteNewsButton>
+                            )}
+                            {can('forum:delete_any_post') && (
+                                <DeleteNewsButton onClick={() => handleDeleteNews(item.id)}>
+                                    🗑️ Excluir
+                                </DeleteNewsButton>
+                            )}
+
+
                         </div>
                     </NewsCard>
                 ))}
@@ -214,42 +177,48 @@ const News = () => {
             {isModalOpen && (
                 <ModalOverlay onClick={() => setIsModalOpen(false)}>
                     <ModalContent onClick={(e) => e.stopPropagation()}>
-                        <h2>Nova Publicação</h2>
+                        <h2>{editingPost ? 'Editar Publicação' : 'Nova Publicação'}</h2>
 
-                        <InputGroup>
-                            <Label>Título</Label>
-                            <StyledInput
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                placeholder="Título da publicação"
-                            />
-                        </InputGroup>
+                        <ForumPostForm
+                            initialData={
+                                editingPost
+                                    ? {
+                                        title: editingPost.title,
+                                        tags: editingPost.tags,
+                                        content: editingPost.content
+                                    }
+                                    : undefined
+                            }
+                            isEditing={!!editingPost}
+                            onCancel={() => {
+                                setIsModalOpen(false);
+                                setEditingPost(null);
+                            }}
+                            onSubmit={async (data) => {
 
-                        <InputGroup>
-                            <Label>Tags</Label>
-                            <StyledInput
-                                value={tags}
-                                onChange={(e) => setTags(e.target.value)}
-                                placeholder="Ex: Brasil, Governo, Política"
-                            />
-                        </InputGroup>
+                                if (editingPost) {
 
-                        <InputGroup>
-                            <Label>Conteúdo</Label>
-                            <EditorContainer>
-                                <ReactQuill
-                                    value={content}
-                                    onChange={setContent}
-                                    modules={modules}
-                                    formats={formats}
-                                />
-                            </EditorContainer>
-                        </InputGroup>
+                                    await forumService.updatePost(editingPost.id, {
+                                        ...data,
+                                        status: editingPost.status
+                                    });
 
-                        <ButtonGroup>
-                            <CancelButton onClick={() => setIsModalOpen(false)}>Cancelar</CancelButton>
-                            <PublishButton onClick={handlePublish}>Publicar</PublishButton>
-                        </ButtonGroup>
+                                } else {
+
+                                    await forumService.createPost({
+                                        ...data,
+                                        status: 'aberto'
+                                    });
+
+                                }
+
+                                await fetchNews();
+
+                                setIsModalOpen(false);
+                                setEditingPost(null);
+                            }}
+                        />
+
                     </ModalContent>
                 </ModalOverlay>
             )}
@@ -280,6 +249,5 @@ const News = () => {
     );
 };
 
-export default News;
+export default ForumHome;
 
-// ------------------ FIM DO ARQUIVO ------------------
